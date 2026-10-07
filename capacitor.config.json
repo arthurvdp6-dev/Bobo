@@ -1,0 +1,6 @@
+{
+  "appId": "com.bobo.loot",
+  "appName": "BOBO Loot",
+  "webDir": "www",
+  "plugins": { "CapacitorHttp": { "enabled": true } }
+}

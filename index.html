@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16211c">
+<title>BOBO Loot</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#16211c;--panel:#1e2c25;--panel2:#26372e;--ink:#ebe6d6;--muted:#9aa89e;--line:#36493e;--amber:#e8b04a;--danger:#e0684f;--ok:#7fc47a;
+--head:'Chakra Petch','Segoe UI',system-ui,sans-serif;--body:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--body)}
+h1,h2,h3{font-family:var(--head);font-weight:700;line-height:1.15;margin:0}
+h1{font-size:clamp(1.7rem,5vw,2.4rem)}h2{font-size:1.35rem}h3{font-size:1.05rem;font-weight:500}
+p{margin:.4rem 0 1rem;max-width:62ch}
+a{color:var(--amber)}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 120px}
+.top{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+.top .brand{font-family:var(--head);font-weight:700;font-size:1.1rem;letter-spacing:.02em}
+.top .sub{color:var(--muted);font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+button,.btn{font:600 .95rem var(--body);border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:10px 14px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.primary{background:var(--amber);border-color:var(--amber);color:#1a1408}
+button.ghost{background:transparent}
+button.danger{color:var(--danger);background:transparent}
+button:disabled{opacity:.5;cursor:wait}
+input,select{font:500 1rem var(--body);background:#121b17;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%}
+input[type=checkbox]{width:auto;accent-color:var(--amber)}
+label.f{display:block;font-size:.85rem;color:var(--muted);margin-bottom:12px}
+label.f input,label.f select{margin-top:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+.muted{color:var(--muted)}.small{font-size:.88rem}
+.err{background:#3a201a;border:1px solid #6b3428;color:#f3c3b6;border-radius:10px;padding:12px 14px;margin:12px 0}
+ol.steps{padding-left:1.2rem;margin:.4rem 0}ol.steps li{margin:.3rem 0}
+.srv{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px;margin:8px 0;border-radius:12px;background:var(--panel)}
+.srv .n{font-weight:600}.srv .g{color:var(--muted);font-size:.88rem}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none}
+.dot.started{background:var(--ok)}.dot.stopped{background:var(--danger)}
+.tabs{display:flex;gap:6px;margin:4px 0 14px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;padding:10px 12px;color:var(--muted)}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--amber)}
+/* Signature : la rangée de balises de ravitaillement */
+.beacons{display:flex;gap:4px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:thin}
+.beacon{flex:none;width:74px;background:none;border:0;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);border-radius:10px}
+.beacon .beam{width:6px;height:40px;border-radius:3px;background:linear-gradient(to top,var(--c),transparent);opacity:.55;transition:height .2s,opacity .2s}
+.beacon .box{width:22px;height:16px;border:2px solid var(--c);border-radius:3px}
+.beacon.set .box{background:var(--c)}
+.beacon .t{font-size:.75rem;line-height:1.1;text-align:center}
+.beacon.on{color:var(--ink);background:var(--panel)}
+.beacon.on .beam{height:58px;opacity:1;box-shadow:0 0 16px var(--c)}
+@media (prefers-reduced-motion:reduce){.beacon .beam{transition:none}}
+.crate-head{border-left:6px solid var(--c);padding-left:12px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.set{background:var(--panel2);border-radius:12px;padding:12px;margin:12px 0}
+.entry{display:grid;grid-template-columns:40px 1fr auto;gap:8px 10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.entry .ic{font-size:1.6rem;text-align:center}
+.entry .nm{font-weight:600;line-height:1.2}.entry .cls{font-size:.75rem;color:var(--muted);word-break:break-all}
+.entry .nums{grid-column:1/-1;display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(92px,1fr))}
+.entry .nums label{font-size:.75rem;color:var(--muted)}
+.entry .nums input{padding:6px 8px;margin-top:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.savebar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;justify-content:flex-end;align-items:center;z-index:6}
+.savebar .st{flex:1;font-size:.88rem;color:var(--muted)}
+.savebar .st.dirty{color:var(--amber)}
+.modal{position:fixed;inset:0;background:rgba(5,10,8,.7);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sheet{background:var(--panel);width:100%;max-width:640px;max-height:88vh;border-radius:16px 16px 0 0;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (min-width:700px){.modal{align-items:center}.sheet{border-radius:16px}}
+.sheet .hd{padding:14px 16px;border-bottom:1px solid var(--line)}
+.sheet .bd{overflow-y:auto;padding:6px 16px 16px}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:4px}
+.chips button{flex:none;padding:6px 10px;font-size:.85rem;border-radius:20px}
+.chips button.on{background:var(--amber);color:#1a1408;border-color:var(--amber)}
+.item{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:10px 4px}
+.item .ic{font-size:1.5rem;width:32px;text-align:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#16211c;padding:10px 16px;border-radius:10px;font-weight:600;z-index:30;max-width:90vw}
+textarea{width:100%;min-height:220px;background:#121b17;color:var(--ink);border:1px solid var(--line);border-radius:8px;font:13px/1.4 ui-monospace,Consolas,monospace;padding:10px}
+details summary{cursor:pointer;color:var(--muted);margin:6px 0}
+.spin{display:inline-block;width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--amber);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-4px;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+/* ---------- Données ---------- */
+const CRATES=[
+['SupplyCrate_Level03_C','Blanc','niv. 3','#ecebe3'],['SupplyCrate_Level15_C','Vert','niv. 15','#74c46c'],
+['SupplyCrate_Level25_C','Bleu','niv. 25','#5aa0e6'],['SupplyCrate_Level35_C','Violet','niv. 35','#a77be0'],
+['SupplyCrate_Level45_C','Jaune','niv. 45','#e8c547'],['SupplyCrate_Level60_C','Rouge','niv. 60','#e2574c'],
+['SupplyCrate_Level03_Double_C','Blanc double','niv. 3','#ecebe3'],['SupplyCrate_Level15_Double_C','Vert double','niv. 15','#74c46c'],
+['SupplyCrate_Level25_Double_C','Bleu double','niv. 25','#5aa0e6'],['SupplyCrate_Level35_Double_C','Violet double','niv. 35','#a77be0'],
+['SupplyCrate_Level45_Double_C','Jaune double','niv. 45','#e8c547'],['SupplyCrate_Level60_Double_C','Rouge double','niv. 60','#e2574c'],
+['SupplyCrate_Cave_QualityTier1_C','Grotte 1','grotte','#c48a5a'],['SupplyCrate_Cave_QualityTier2_C','Grotte 2','grotte','#c48a5a'],
+['SupplyCrate_Cave_QualityTier3_C','Grotte 3','grotte','#c48a5a'],['SupplyCrate_Cave_QualityTier4_C','Grotte 4','grotte','#c48a5a']];
+const CATS={res:['🪨','Ressources'],arme:['🔫','Armes'],mun:['🎯','Munitions'],armure:['🛡️','Armures'],selle:['🦖','Selles'],struct:['🏗️','Structures'],conso:['🧪','Consommables'],outil:['🔧','Outils']};
+const R=(c,n)=>['PrimalItemResource_'+c+'_C',n,'res'],W=(c,n,k='arme')=>['PrimalItem_Weapon'+c+'_C',n,k],A=(c,n)=>['PrimalItemAmmo_'+c+'_C',n,'mun'],
+AR=(c,n)=>['PrimalItemArmor_'+c+'_C',n,'armure'],SA=(c,n)=>['PrimalItemArmor_'+c+'Saddle_C','Selle '+n,'selle'],ST=(c,n)=>['PrimalItemStructure_'+c+'_C',n,'struct'],CO=(c,n)=>['PrimalItemConsumable_'+c+'_C',n,'conso'];
+const ITEMS=[
+R('MetalIngot','Lingot de métal'),R('Metal','Minerai de métal'),R('Polymer','Polymère'),R('Polymer_Organic','Polymère organique'),R('Crystal','Cristal'),
+R('Element','Élément'),R('BlackPearl','Perle noire'),R('Silicon','Perle de silice'),R('ChitinPaste','Pâte cimentaire'),R('Electronics','Électronique'),
+R('Gunpowder','Poudre noire'),R('Sparkpowder','Poudre à étincelles'),R('Oil','Pétrole'),R('Obsidian','Obsidienne'),R('Hide','Peau'),R('Pelt','Fourrure'),
+R('Chitin','Chitine'),R('Keratin','Kératine'),R('Fibers','Fibre'),R('Wood','Bois'),R('Stone','Pierre'),R('Thatch','Paille'),R('AnglerGel',"Gel d'Angler"),
+W('Gun','Pistolet simple'),W('MachinedPistol','Pistolet fabriqué'),W('Rifle','Fusil Longneck'),W('MachinedRifle',"Fusil d'assaut"),
+W('Shotgun','Fusil de chasse'),W('MachinedShotgun','Fusil à pompe'),W('OneShotRifle','Sniper fabriqué'),W('RocketLauncher','Lance-roquettes'),
+W('TekRifle','Fusil Tek'),W('Bow','Arc'),W('Crossbow','Arbalète'),W('CompoundBow','Arc à poulies'),W('Harpoon','Lance-harpon'),
+W('Sword','Épée'),W('Pike','Pique'),W('Grenade','Grenade'),W('C4','Détonateur C4'),['PrimalItemC4Ammo_C','Charge C4','arme'],
+A('SimpleBullet','Balle simple'),A('SimpleRifleBullet','Balle de fusil simple'),A('AdvancedBullet','Balle avancée'),A('AdvancedRifleBullet','Balle de fusil avancée'),
+A('SimpleShotgunBullet','Cartouche de fusil'),A('AdvancedSniperBullet','Balle de sniper avancée'),A('Rocket','Roquette'),A('ArrowStone','Flèche en pierre'),
+A('CompoundBowArrow','Flèche en métal'),A('ArrowTranq','Flèche tranquillisante'),A('TranqDart','Fléchette tranquillisante'),
+...['Helmet:Casque','Shirt:Plastron','Pants:Jambières','Gloves:Gants','Boots:Bottes'].flatMap(p=>{const[k,n]=p.split(':');return[AR('Riot'+k,n+' anti-émeute'),AR('Metal'+k,n+' Flak'),AR('Tek'+k,n+' Tek'),AR('Ghillie'+k,n+' ghillie')]}),
+AR('MetalShield','Bouclier en métal'),AR('TransparentRiotShield','Bouclier anti-émeute'),
+SA('Rex','Rex'),SA('Gigant','Giganotosaure'),SA('Spino','Spino'),SA('Argentavis','Argentavis'),SA('Quetz','Quetzal'),SA('Ptero','Ptéranodon'),
+SA('Therizinosaurus','Thérizinosaure'),SA('Stego','Stégosaure'),SA('Ankylo','Ankylosaure'),SA('Trike','Tricératops'),SA('Raptor','Raptor'),
+SA('Carno','Carnotaure'),SA('Allo','Allosaure'),SA('Para','Parasaurolophus'),SA('Doed','Doedicurus'),SA('Mammoth','Mammouth'),SA('Sauro','Brontosaure'),
+SA('Sarco','Sarcosuchus'),SA('Mosa','Mosasaure'),SA('Plesia','Plésiosaure'),
+ST('Turret','Tourelle automatique'),ST('HeavyTurret','Tourelle lourde'),ST('Fabricator','Fabricateur'),ST('IndustrialForge','Forge industrielle'),
+ST('IndustrialGrill','Grill industriel'),ST('ChemBench','Établi de chimie'),ST('AnvilBench','Forge (établi)'),ST('IceBox','Réfrigérateur'),
+ST('PreservingBin','Bac de conservation'),ST('StorageBox_Huge','Coffre-fort'),ST('StorageBox_Large','Grand coffre'),ST('Generator','Générateur'),
+ST('TekGenerator','Générateur Tek'),ST('TekReplicator','Réplicateur Tek'),ST('CryoFridge','Cryo-frigo'),ST('AirConditioner','Climatiseur'),
+ST('MetalFloor','Fondation en métal'),ST('MetalWall','Mur en métal'),ST('MetalCeiling','Plafond en métal'),
+ST('MetalGateframe_Large','Grand cadre de portail en métal'),ST('MetalGate_Large','Grand portail en métal'),
+CO('Stimulant','Stimulant'),CO('Narcotic','Narcotique'),CO('HealSoup','Breuvage médical'),CO('StaminaSoup',"Ragoût d'endurance"),
+W('MetalHatchet','Hache en métal','outil'),W('MetalPick','Pioche en métal','outil'),W('Chainsaw','Tronçonneuse','outil'),
+W('ClimbPick','Piolet','outil'),W('GPS','GPS','outil'),W('EmptyCryopod','Cryopod','outil')];
+const BYCLS=Object.fromEntries(ITEMS.map(i=>[i[0].toLowerCase(),i]));
+const GM='/script/shootergame.shootergamemode',SS='ServerSettings';
+const STATS=[['0','Vie'],['8','Dégâts de mêlée'],['7','Poids'],['1','Endurance']];
+
+/* ---------- Etat ---------- */
+const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+const S={view:'login',token:LS.get('token')||'',proxy:LS.get('proxy')||'',proxyKey:LS.get('proxyKey')||'',services:[],svc:null,gs:null,
+dir:null,game:'',gus:'',crates:{},loaded:new Set(),dino:{},adminKey:null,adminPwd:'',tab:'drops',crate:CRATES[0][0],dirty:false,busy:false,err:'',picker:null};
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m,ms=3500){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),ms)}
+
+/* ---------- Réseau Nitrado ---------- */
+async function raw(url,opt={}){
+  const h=Object.assign({},opt.headers||{});let u=url;
+  if(S.proxy){u=S.proxy.replace(/\/+$/,'')+'/?u='+encodeURIComponent(url);if(S.proxyKey)h['X-Proxy-Key']=S.proxyKey}
+  try{return await fetch(u,{method:opt.method||'GET',headers:h,body:opt.body})}
+  catch(e){throw new Error(S.proxy?'Le proxy ne répond pas. Vérifie son adresse dans les options avancées.':'Le navigateur a bloqué la requête vers Nitrado. Ajoute un proxy dans les options avancées (voir README).')}
+}
+async function api(path,{method='GET',form}={}){
+  const opt={method,headers:{Authorization:'Bearer '+S.token,Accept:'application/json'}};
+  if(form){opt.body=new URLSearchParams(form).toString();opt.headers['Content-Type']='application/x-www-form-urlencoded'}
+  const r=await raw('https://api.nitrado.net'+path,opt);let j={};try{j=await r.json()}catch(e){}
+  if(r.status===401)throw new Error('Nitrado refuse le token. Vérifie qu\'il est valide et qu\'il a le scope « service ».');
+  if(!r.ok||j.status==='error')throw new Error(j.message||('Erreur Nitrado '+r.status));
+  return j.data||{};
+}
+const gp=p=>'/services/'+S.svc.id+'/gameservers'+p;
+async function listDir(d){return (await api(gp('/file_server/list?dir='+encodeURIComponent(d)))).entries||[]}
+async function readFile(path){
+  let d;try{d=await api(gp('/file_server/download?file='+encodeURIComponent(path)))}catch(e){return ''}
+  const r=await raw(d.token.url);if(!r.ok)throw new Error('Lecture impossible : '+path);return await r.text();
+}
+async function writeFile(dir,name,text){
+  const d=await api(gp('/file_server/upload?path='+encodeURIComponent(dir)+'&file='+encodeURIComponent(name)),{method:'POST'});
+  const r=await raw(d.token.url,{method:'POST',headers:{token:d.token.token,'Content-Type':'application/binary'},body:text});
+  if(!r.ok)throw new Error('Envoi impossible : '+name+' ('+r.status+')');
+}
+async function findConfigDir(root){
+  const skip=/^(logs|savedarks.*|content|binaries|engine|plugins|mods|crashes|webcache|backups?|savegames)$/i,pri=/shootergame|saved|config|windowsserver|linuxserver|ark/i;
+  const q=[root];let n=0;
+  while(q.length&&n<45){const dir=q.shift();n++;let e;try{e=await listDir(dir)}catch(_){continue}
+    if(e.some(x=>x.type==='file'&&/^game(usersettings)?\.ini$/i.test(x.name)))return dir;
+    for(const x of e.filter(x=>x.type==='dir'&&!skip.test(x.name))){const p=x.path||(dir.replace(/\/$/,'')+'/'+x.name);pri.test(x.name)?q.unshift(p):q.push(p)}}
+  return null;
+}
+async function waitStatus(ok,ms){const t0=Date.now();while(Date.now()-t0<ms){await new Promise(r=>setTimeout(r,5000));const g=(await api(gp(''))).gameserver;if(ok.includes(g.status))return}throw new Error("Le serveur ne s'est pas arrêté à temps. Réessaie.")}
+
+/* ---------- INI ---------- */
+const L=t=>t.replace(/\r\n/g,'\n').split('\n');
+function sec(lines,name){let s=-1;for(let i=0;i<lines.length;i++)if(/^\s*\[/.test(lines[i])){if(s>=0)return[s,i];if(lines[i].trim().toLowerCase()==='['+name.toLowerCase()+']')s=i}return s>=0?[s,lines.length]:null}
+const kv=l=>{const m=l.match(/^\s*([^=;#\s][^=]*?)\s*=(.*)$/);return m?[m[1],m[2].trim()]:null};
+function iniGet(t,s,k){const ls=L(t),r=sec(ls,s);if(!r)return null;for(let i=r[0]+1;i<r[1];i++){const p=kv(ls[i]);if(p&&p[0].toLowerCase()===k.toLowerCase())return p[1]}return null}
+function iniEach(t,s,fn){const ls=L(t),r=sec(ls,s);if(!r)return;for(let i=r[0]+1;i<r[1];i++){const p=kv(ls[i]);if(p)fn(p[0],p[1])}}
+function iniRemove(t,s,pred){const ls=L(t),r=sec(ls,s);if(!r)return t;const out=[];ls.forEach((l,i)=>{if(i>r[0]&&i<r[1]){const p=kv(l);if(p&&pred(p[0],p[1]))return}out.push(l)});return out.join('\n')}
+function iniAdd(t,s,lines){if(!lines.length)return t;let ls=L(t),r=sec(ls,s);
+  if(!r){while(ls.length&&!ls[ls.length-1].trim())ls.pop();if(ls.length)ls.push('');ls.push('['+s+']',...lines,'');return ls.join('\n')}
+  let e=r[1];while(e>r[0]+1&&!ls[e-1].trim())e--;ls.splice(e,0,...lines);return ls.join('\n')}
+function iniSet(t,s,k,v){t=iniRemove(t,s,kk=>kk.toLowerCase()===k.toLowerCase());return v==null||v===''?t:iniAdd(t,s,[k+'='+v])}
+
+/* ---------- Structs Unreal (drops) ---------- */
+function parseUE(s){let i=0;const ws=()=>{while(i<s.length&&/\s/.test(s[i]))i++};
+  function val(){ws();if(s[i]==='('){i++;ws();if(s[i]===')'){i++;return[]}
+      if(/^[A-Za-z_]\w*\s*=/.test(s.slice(i,i+80))){const o={};for(;;){ws();const k=/^[A-Za-z_]\w*/.exec(s.slice(i))[0];i+=k.length;ws();i++;o[k]=val();ws();if(s[i]===','){i++;continue}if(s[i]===')'){i++;break}throw 0}return o}
+      const a=[];for(;;){a.push(val());ws();if(s[i]===','){i++;continue}if(s[i]===')'){i++;break}throw 0}return a}
+    if(s[i]==='"'){const j=s.indexOf('"',i+1);const v=s.slice(i+1,j);i=j+1;return v}
+    const j=i;while(i<s.length&&!/[,)]/.test(s[i]))i++;return s.slice(j,i).trim()}
+  return val()}
+const g=(o,k,d)=>{if(!o||typeof o!=='object'||Array.isArray(o))return d;const x=Object.keys(o).find(z=>z.toLowerCase()===k.toLowerCase());return x===undefined?d:o[x]};
+const B=v=>String(v).toLowerCase()==='true',AA=v=>Array.isArray(v)?v:(v==null||v===''?[]:[v]),N=(v,d)=>{const n=parseFloat(v);return isNaN(n)?d:n};
+function toCrate(o){return{cls:g(o,'SupplyCrateClassString'),minSets:N(g(o,'MinItemSets'),1),maxSets:N(g(o,'MaxItemSets'),1),power:N(g(o,'NumItemSetsPower'),1),
+  noRep:B(g(o,'bSetsRandomWithoutReplacement',true)),append:B(g(o,'bAppendItemSets',false)),
+  sets:AA(g(o,'ItemSets')).map(s=>({name:g(s,'SetName',''),minItems:N(g(s,'MinNumItems'),1),maxItems:N(g(s,'MaxNumItems'),1),power:N(g(s,'NumItemsPower'),1),
+    weight:N(g(s,'SetWeight'),1),noRep:B(g(s,'bItemsRandomWithoutReplacement',true)),
+    entries:AA(g(s,'ItemEntries')).map(e=>({weight:N(g(e,'EntryWeight'),1),items:AA(g(e,'ItemClassStrings')),iw:AA(g(e,'ItemsWeights')).map(x=>N(x,1)),
+      minQ:N(g(e,'MinQuantity'),1),maxQ:N(g(e,'MaxQuantity'),1),minQual:N(g(e,'MinQuality'),0),maxQual:N(g(e,'MaxQuality'),0),
+      bp:B(g(e,'bForceBlueprint',false)),bpChance:N(g(e,'ChanceToBeBlueprintOverride'),0)}))}))}}
+const F=n=>{n=Number(n)||0;return Number.isInteger(n)?n.toFixed(1):String(+n.toFixed(4))};
+function serCrate(c){
+  const sets=c.sets.filter(s=>s.entries.length).map(s=>'(SetName="'+(s.name||'Groupe').replace(/"/g,'')+'",MinNumItems='+F(s.minItems)+',MaxNumItems='+F(s.maxItems)+',NumItemsPower='+F(s.power)+',SetWeight='+F(s.weight)+',bItemsRandomWithoutReplacement='+s.noRep+',ItemEntries=('+
+    s.entries.map(e=>'(EntryWeight='+F(e.weight)+',ItemClassStrings=('+e.items.map(x=>'"'+x+'"').join(',')+'),ItemsWeights=('+e.items.map((_,i)=>F(e.iw[i]??1)).join(',')+'),MinQuantity='+F(e.minQ)+',MaxQuantity='+F(e.maxQ)+',MinQuality='+F(e.minQual)+',MaxQuality='+F(e.maxQual)+',bForceBlueprint='+e.bp+',ChanceToBeBlueprintOverride='+F(e.bpChance)+')').join(',')+'))');
+  if(!sets.length)return null;
+  return 'ConfigOverrideSupplyCrateItems=(SupplyCrateClassString="'+c.cls+'",MinItemSets='+F(c.minSets)+',MaxItemSets='+F(c.maxSets)+',NumItemSetsPower='+F(c.power)+',bSetsRandomWithoutReplacement='+c.noRep+',ItemSets=('+sets.join(',')+'),bAppendItemSets='+c.append+')';
+}
+const crateCls=v=>{try{return toCrate(parseUE(v)).cls}catch(e){return null}};
+
+/* ---------- Chargement / sauvegarde ---------- */
+function parseAll(){
+  S.crates={};S.loaded=new Set();
+  iniEach(S.game,GM,(k,v)=>{if(k.toLowerCase()!=='configoverridesupplycrateitems')return;try{const c=toCrate(parseUE(v));if(c.cls){S.crates[c.cls]=c;S.loaded.add(c.cls)}}catch(e){}});
+  const d=N(iniGet(S.gus,SS,'OverrideOfficialDifficulty'),null);
+  S.dino={maxLevel:d?Math.round(d*30):'',stats:Object.fromEntries(STATS.map(([i])=>[i,iniGet(S.game,GM,'PerLevelStatsMultiplier_DinoWild['+i+']')||'']))};
+  S.adminPwd='';S.dirty=false;
+}
+function build(){
+  const all=new Set([...S.loaded,...Object.keys(S.crates)]);
+  let game=iniRemove(S.game,GM,(k,v)=>k.toLowerCase()==='configoverridesupplycrateitems'&&all.has(crateCls(v)));
+  game=iniAdd(game,GM,Object.values(S.crates).map(serCrate).filter(Boolean));
+  for(const[i]of STATS)game=iniSet(game,GM,'PerLevelStatsMultiplier_DinoWild['+i+']',S.dino.stats[i]===''?null:F(S.dino.stats[i]));
+  let gus=S.gus;
+  if(S.dino.maxLevel){gus=iniSet(gus,SS,'OverrideOfficialDifficulty',(S.dino.maxLevel/30).toFixed(6));gus=iniSet(gus,SS,'DifficultyOffset','1.000000')}
+  if(S.adminPwd&&!S.adminKey)gus=iniSet(gus,SS,'ServerAdminPassword',S.adminPwd);
+  return{game,gus};
+}
+async function loadFiles(){S.game=await readFile(S.dir+'/Game.ini');S.gus=await readFile(S.dir+'/GameUserSettings.ini');parseAll()}
+async function save(restart){
+  if(S.busy)return;const{game,gus}=build();S.busy=true;render();
+  try{
+    if(restart){toast('Arrêt du serveur…',6000);await api(gp('/stop'),{method:'POST'});await waitStatus(['stopped'],240000)}
+    if(game!==S.game)await writeFile(S.dir,'Game.ini',game);
+    if(gus!==S.gus)await writeFile(S.dir,'GameUserSettings.ini',gus);
+    if(S.adminPwd&&S.adminKey)await api(gp('/settings'),{method:'POST',form:{category:S.adminKey[0],key:S.adminKey[1],value:S.adminPwd}});
+    S.game=game;S.gus=gus;parseAll();
+    if(restart){await api(gp('/restart'),{method:'POST'});toast('Enregistré. Le serveur redémarre.')}else toast('Enregistré sur le serveur.');
+  }catch(e){S.err=e.message}
+  S.busy=false;render();
+}
+async function login(){
+  S.token=$('#tok').value.trim();S.proxy=$('#px').value.trim();S.proxyKey=$('#pk').value.trim();
+  LS.set('token',S.token);LS.set('proxy',S.proxy||null);LS.set('proxyKey',S.proxyKey||null);
+  if(!S.token){S.err='Colle ton token Nitrado pour continuer.';return render()}
+  S.view='loading';S.err='';render('Récupération de tes serveurs…');
+  try{const d=await api('/services');S.services=(d.services||[]).filter(x=>x.type==='gameserver');S.view='servers'}
+  catch(e){S.err=e.message;S.view='login'}render();
+}
+async function openServer(id){
+  S.svc=S.services.find(x=>String(x.id)===String(id));S.view='loading';S.err='';render('Connexion au serveur…');
+  try{
+    S.gs=(await api(gp(''))).gameserver||{};
+    S.adminKey=null;for(const[c,o]of Object.entries(S.gs.settings||{}))for(const k of Object.keys(o||{}))if(!S.adminKey&&/admin.*pass|pass.*admin/i.test(k))S.adminKey=[c,k];
+    render('Recherche des fichiers de config…');
+    S.dir=LS.get('dir:'+S.svc.id)||await findConfigDir((S.gs.game_specific&&S.gs.game_specific.path)||'/');
+    if(!S.dir)throw new Error('Game.ini introuvable. Indique le dossier de config dans l\'onglet Admin.');
+    render('Lecture de Game.ini…');await loadFiles();S.view='server';S.tab='drops';
+  }catch(e){S.err=e.message;S.view='server';S.tab='admin';S.game=S.game||'';S.gus=S.gus||'';parseAll()}
+  render();
+}
+
+/* ---------- Rendu ---------- */
+const itemInfo=c=>BYCLS[String(c).toLowerCase()]||[c,String(c).replace(/^PrimalItem\w*?_/,'').replace(/_C$/,''),null];
+const icon=c=>{const i=itemInfo(c);return i[2]?CATS[i[2]][0]:'📦'};
+const crateDef=cls=>CRATES.find(c=>c[0]===cls)||[cls,cls.replace(/^SupplyCrate_/,'').replace(/_C$/,''),'personnalisé','#9aa89e'];
+const errBox=()=>S.err?'<div class="err" role="alert">'+esc(S.err)+'</div>':'';
+const numIn=(lab,f,v,extra='')=>'<label>'+lab+'<input type="number" inputmode="decimal" step="any" data-f="'+f+'" value="'+esc(v)+'" '+extra+'></label>';
+
+function vLogin(){return '<div class="wrap" style="max-width:560px"><h1>Gère les drops de ton serveur ARK</h1>'+
+ '<p class="muted">Connecte ton compte Nitrado avec un token d\'accès. Il reste enregistré sur cet appareil uniquement.</p>'+errBox()+
+ '<div class="card"><label class="f">Token Nitrado<input id="tok" type="password" autocomplete="off" value="'+esc(S.token)+'" placeholder="Colle ton long-life token"></label>'+
+ '<details><summary>Options avancées (proxy)</summary><label class="f">Adresse du proxy<input id="px" value="'+esc(S.proxy)+'" placeholder="https://bobo-loot-proxy.ton-compte.workers.dev"></label>'+
+ '<label class="f">Clé du proxy<input id="pk" type="password" value="'+esc(S.proxyKey)+'"></label></details>'+
+ '<button class="primary" data-a="login" style="width:100%;margin-top:8px">Se connecter</button></div>'+
+ '<div class="card small"><h3>Obtenir ton token</h3><ol class="steps"><li>Connecte-toi sur nitrado.net.</li><li>Ouvre ton compte, section Développeur, puis Long-life tokens.</li><li>Crée un token avec les scopes <b>service</b> et <b>user_info</b>.</li><li>Copie-le ici.</li></ol></div></div>'}
+function vServers(){return '<div class="wrap"><div class="row" style="justify-content:space-between"><h1>Tes serveurs</h1><button class="ghost" data-a="logout">Se déconnecter</button></div>'+errBox()+
+ (S.services.length?S.services.map(s=>{const d=s.details||{};return '<button class="srv" data-a="open" data-id="'+s.id+'"><span class="dot '+esc(s.status)+'"></span><span><span class="n">'+esc(s.comment||d.name||('Serveur '+s.id))+'</span><br><span class="g">'+esc(d.game||'')+' '+esc(d.address||'')+'</span></span></button>'}).join('')
+ :'<p class="muted">Aucun serveur de jeu sur ce compte Nitrado.</p>')+'</div>'}
+function vLoading(m){return '<div class="wrap"><p><span class="spin"></span>'+esc(m||'Chargement…')+'</p></div>'}
+function vServer(){
+  const name=S.svc.comment||(S.svc.details||{}).name||'Serveur';
+  const t=(k,l)=>'<button class="'+(S.tab===k?'on':'')+'" data-a="tab" data-k="'+k+'">'+l+'</button>';
+  let body=S.tab==='drops'?vDrops():S.tab==='dinos'?vDinos():vAdmin();
+  const dirty=S.dirty||!!S.adminPwd;
+  return '<div class="top"><button class="ghost" data-a="back" aria-label="Retour aux serveurs">‹</button><span class="brand">BOBO Loot</span><span class="sub">'+esc(name)+'</span></div>'+
+   '<div class="wrap"><div class="tabs">'+t('drops','Drops')+t('dinos','Dinos')+t('admin','Admin')+'</div>'+errBox()+body+'</div>'+
+   '<div class="savebar"><span class="st '+(dirty?'dirty':'')+'">'+(S.busy?'<span class="spin"></span>Envoi en cours…':dirty?'Modifications non enregistrées':'À jour')+'</span>'+
+   '<button data-a="save" '+(S.busy||!S.dir?'disabled':'')+'>Enregistrer</button><button class="primary" data-a="saveR" '+(S.busy||!S.dir?'disabled':'')+'>Enregistrer et redémarrer</button></div>';
+}
+function vDrops(){
+  const list=[...CRATES,...Object.keys(S.crates).filter(c=>!CRATES.some(x=>x[0]===c)).map(crateDef)];
+  const bc=list.map(c=>'<button class="beacon '+(S.crate===c[0]?'on ':'')+(S.crates[c[0]]?'set':'')+'" style="--c:'+c[3]+'" data-a="crate" data-k="'+c[0]+'"><span class="beam"></span><span class="box"></span><span class="t">'+esc(c[1])+'</span></button>').join('');
+  const d=crateDef(S.crate),c=S.crates[S.crate];
+  let h='<div class="beacons" role="tablist" aria-label="Drops">'+bc+'</div><div class="row small"><input id="newcrate" placeholder="Autre drop (nom de classe, ex : SupplyCrate_OceanInstant_C)" style="flex:1;min-width:200px"><button data-a="addcrate">Ajouter</button></div>';
+  h+='<div class="card" style="--c:'+d[3]+'"><div class="crate-head"><h2>Drop '+esc(d[1])+'</h2><div class="muted small">'+esc(d[2])+'<br>'+esc(d[0])+'</div></div>';
+  if(!c)return h+'<p style="margin-top:14px">Ce drop utilise le loot par défaut d\'ARK.</p><button class="primary" data-a="custom">Personnaliser ce drop</button></div>';
+  h+='<div class="grid" style="margin-top:14px">'+numIn('Groupes min','c.minSets',c.minSets)+numIn('Groupes max','c.maxSets',c.maxSets)+'</div>'+
+   '<label class="row small" style="margin:8px 0"><input type="checkbox" data-f="c.append" '+(c.append?'checked':'')+'> Ajouter au loot d\'origine au lieu de le remplacer</label>';
+  c.sets.forEach((s,si)=>{h+='<div class="set"><div class="row"><input data-f="s.name" data-si="'+si+'" value="'+esc(s.name)+'" placeholder="Nom du groupe" style="flex:1;min-width:140px"><button class="danger" data-a="delset" data-si="'+si+'">Supprimer le groupe</button></div>'+
+    '<div class="grid" style="margin:10px 0">'+numIn('Objets min','s.minItems',s.minItems,'data-si="'+si+'"')+numIn('Objets max','s.maxItems',s.maxItems,'data-si="'+si+'"')+numIn('Chance du groupe','s.weight',s.weight,'data-si="'+si+'"')+'</div>';
+    s.entries.forEach((e,ei)=>{const a='data-si="'+si+'" data-ei="'+ei+'"',nm=e.items.map(x=>itemInfo(x)[1]).join(', ');
+      h+='<div class="entry"><span class="ic" aria-hidden="true">'+icon(e.items[0])+'</span><span><span class="nm">'+esc(nm||'Objet vide')+'</span><br><span class="cls">'+esc(e.items.join(', '))+'</span></span><button class="danger" data-a="delentry" '+a+' aria-label="Retirer">✕</button>'+
+      '<div class="nums">'+numIn('Quantité min','e.minQ',e.minQ,a)+numIn('Quantité max','e.maxQ',e.maxQ,a)+numIn('Qualité min','e.minQual',e.minQual,a)+numIn('Qualité max','e.maxQual',e.maxQual,a)+
+      numIn('Chance','e.weight',e.weight,a)+numIn('% plan (BP)','e.bpChance',Math.round(e.bpChance*100),a)+'</div></div>'});
+    h+='<button data-a="pick" data-si="'+si+'" style="margin-top:8px">+ Ajouter un objet</button></div>'});
+  return h+'<div class="row"><button data-a="addset">+ Ajouter un groupe</button><button class="danger" data-a="reset">Remettre le loot par défaut</button></div>'+
+   '<p class="small muted" style="margin-top:12px">Qualité : 0 = primitif, environ 10 = ascendant. « Chance » = poids relatif face aux autres lignes.</p></div>';
+}
+function vDinos(){
+  const opts=['',30,60,90,120,150,180,210,240,300,450,600].map(v=>'<option value="'+v+'" '+(String(S.dino.maxLevel)===String(v)?'selected':'')+'>'+(v?'Niveau '+v:'Ne pas modifier')+'</option>').join('');
+  return '<div class="card"><h2>Niveau des dinos sauvages</h2><label class="f" style="margin-top:12px">Niveau maximum<select data-f="d.maxLevel">'+opts+'</select></label>'+
+   '<p class="small muted">ARK n\'a pas de réglage de niveau minimum : avec un max de 150, les dinos apparaissent entre 5 et 150 par paliers de 5. Pour forcer un minimum, il faut réécrire les zones de spawn de chaque carte, ce que cette version ne fait pas encore.</p></div>'+
+   '<div class="card"><h2>Stats gagnées par niveau (sauvages)</h2><p class="small muted">Multiplicateur, 1 = normal. Laisse vide pour ne pas modifier.</p><div class="grid">'+
+   STATS.map(([i,n])=>numIn(n,'d.stat',S.dino.stats[i],'data-k="'+i+'" placeholder="1.0"')).join('')+'</div></div>';
+}
+function vAdmin(){
+  return '<div class="card"><h2>Mot de passe admin</h2><label class="f" style="margin-top:12px">Nouveau mot de passe<input type="password" data-f="adminPwd" value="'+esc(S.adminPwd)+'" autocomplete="new-password"></label>'+
+   '<p class="small muted">'+(S.adminKey?'Envoyé dans les réglages Nitrado ('+esc(S.adminKey.join(' / '))+').':'Écrit dans GameUserSettings.ini (ServerAdminPassword).')+'</p></div>'+
+   '<div class="card"><h2>Serveur</h2><p class="small muted">Statut : '+esc((S.gs&&S.gs.status)||'inconnu')+'</p><div class="row"><button data-a="restart">Redémarrer</button><button data-a="reload">Recharger depuis le serveur</button></div></div>'+
+   '<div class="card"><h2>Dossier de config</h2><label class="f" style="margin-top:12px">Chemin contenant Game.ini<input id="dir" value="'+esc(S.dir||'')+'"></label><button data-a="setdir">Utiliser ce dossier</button>'+
+   '<p class="small muted">Sur Nitrado, active le mode expert dans les réglages du serveur pour que tes fichiers .ini ne soient pas écrasés.</p></div>'+
+   '<details class="card"><summary>Aperçu du Game.ini généré</summary><textarea readonly>'+esc(build().game)+'</textarea></details>';
+}
+function vPicker(){
+  const p=S.picker,q=(p.q||'').toLowerCase();
+  const list=ITEMS.filter(i=>(!p.cat||i[2]===p.cat)&&(!q||i[1].toLowerCase().includes(q)||i[0].toLowerCase().includes(q)));
+  return '<div class="modal" data-a="closepick"><div class="sheet" role="dialog" aria-label="Choisir un objet"><div class="hd"><div class="row"><input id="pq" placeholder="Rechercher un objet" value="'+esc(p.q||'')+'" style="flex:1"><button class="ghost" data-a="closepick">Fermer</button></div>'+
+   '<div class="chips"><button class="'+(p.cat?'':'on')+'" data-a="cat" data-k="">Tout</button>'+Object.entries(CATS).map(([k,v])=>'<button class="'+(p.cat===k?'on':'')+'" data-a="cat" data-k="'+k+'">'+v[0]+' '+v[1]+'</button>').join('')+'</div></div>'+
+   '<div class="bd" id="plist">'+list.map(i=>'<button class="item" data-a="additem" data-k="'+i[0]+'"><span class="ic" aria-hidden="true">'+CATS[i[2]][0]+'</span><span><b>'+esc(i[1])+'</b><br><span class="small muted">'+esc(i[0])+'</span></span></button>').join('')+
+   '<div class="row" style="margin-top:14px"><input id="pcls" placeholder="Autre classe (objets moddés, ex : PrimalItem_..._C)" style="flex:1"><button data-a="addcls">Ajouter</button></div></div></div></div>';
+}
+function render(msg){
+  const y=window.scrollY;
+  app.innerHTML=S.view==='login'?vLogin():S.view==='servers'?vServers():S.view==='loading'?vLoading(msg):vServer();
+  if(S.picker)app.insertAdjacentHTML('beforeend',vPicker());
+  window.scrollTo(0,y);
+}
+
+/* ---------- Interactions ---------- */
+const newEntry=cls=>({weight:1,items:[cls],iw:[1],minQ:1,maxQ:1,minQual:0,maxQual:5,bp:false,bpChance:0});
+const touch=()=>{S.dirty=true;const st=$('.savebar .st');if(st){st.textContent='Modifications non enregistrées';st.classList.add('dirty')}};
+function addItem(cls){const c=S.crates[S.crate];c.sets[S.picker.si].entries.push(newEntry(cls));S.picker=null;touch();render()}
+app.addEventListener('click',async ev=>{
+  const el=ev.target.closest('[data-a]');if(!el)return;const a=el.dataset.a,si=+el.dataset.si,ei=+el.dataset.ei,k=el.dataset.k;
+  if(a==='closepick'&&ev.target!==el)return;
+  const c=S.crates[S.crate];
+  switch(a){
+    case 'login':return login();
+    case 'logout':S.token='';LS.set('token',null);S.view='login';return render();
+    case 'open':return openServer(el.dataset.id);
+    case 'back':if((S.dirty||S.adminPwd)&&!confirm('Quitter sans enregistrer ?'))return;S.view='servers';S.err='';return render();
+    case 'tab':S.tab=k;return render();
+    case 'crate':S.crate=k;return render();
+    case 'addcrate':{const v=$('#newcrate').value.trim();if(!v)return;S.crate=v;S.crates[v]=S.crates[v]||{cls:v,minSets:1,maxSets:1,power:1,noRep:true,append:false,sets:[{name:'Groupe 1',minItems:1,maxItems:1,power:1,weight:1,noRep:true,entries:[]}]};touch();return render()}
+    case 'custom':S.crates[S.crate]={cls:S.crate,minSets:1,maxSets:1,power:1,noRep:true,append:false,sets:[{name:'Groupe 1',minItems:1,maxItems:2,power:1,weight:1,noRep:true,entries:[]}]};touch();return render();
+    case 'reset':if(!confirm('Remettre ce drop au loot par défaut ?'))return;delete S.crates[S.crate];touch();return render();
+    case 'addset':c.sets.push({name:'Groupe '+(c.sets.length+1),minItems:1,maxItems:1,power:1,weight:1,noRep:true,entries:[]});touch();return render();
+    case 'delset':c.sets.splice(si,1);touch();return render();
+    case 'delentry':c.sets[si].entries.splice(ei,1);touch();return render();
+    case 'pick':S.picker={si,q:'',cat:''};render();return $('#pq').focus();
+    case 'closepick':S.picker=null;return render();
+    case 'cat':S.picker.cat=k;return render();
+    case 'additem':return addItem(k);
+    case 'addcls':{const v=$('#pcls').value.trim();if(v)addItem(v);return}
+    case 'save':return save(false);
+    case 'saveR':return save(true);
+    case 'restart':try{await api(gp('/restart'),{method:'POST'});toast('Redémarrage lancé.')}catch(e){S.err=e.message;render()}return;
+    case 'reload':S.view='loading';render('Lecture des fichiers…');try{await loadFiles();S.err=''}catch(e){S.err=e.message}S.view='server';return render();
+    case 'setdir':{const v=$('#dir').value.trim().replace(/\/+$/,'');if(!v)return;S.dir=v;LS.set('dir:'+S.svc.id,v);S.view='loading';render('Lecture des fichiers…');
+      try{await loadFiles();S.err=''}catch(e){S.err=e.message}S.view='server';return render()}
+  }
+});
+app.addEventListener('input',ev=>{
+  const el=ev.target;if(el.id==='pq'){S.picker.q=el.value;const pos=el.selectionStart;render();const n=$('#pq');n.focus();n.setSelectionRange(pos,pos);return}
+  const f=el.dataset.f;if(!f)return;const v=el.type==='checkbox'?el.checked:el.value,num=parseFloat(v),si=+el.dataset.si,ei=+el.dataset.ei,c=S.crates[S.crate];
+  if(f==='adminPwd'){S.adminPwd=v;return touch()}
+  if(f==='d.maxLevel'){S.dino.maxLevel=v;return touch()}
+  if(f==='d.stat'){S.dino.stats[el.dataset.k]=v;return touch()}
+  const[o,k]=f.split('.');const t=o==='c'?c:o==='s'?c.sets[si]:c.sets[si].entries[ei];
+  if(typeof v==='boolean'||k==='name')t[k]=v;else if(!isNaN(num))t[k]=k==='bpChance'?Math.min(100,Math.max(0,num))/100:num;
+  touch();
+});
+app.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ev.target.id==='tok')login();if(ev.key==='Escape'&&S.picker){S.picker=null;render()}});
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if(S.token)login();else render();
+</script>
+</body>
+</html>
