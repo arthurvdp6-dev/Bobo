@@ -6,4 +6,5 @@
 {"run":"npm init -y && npm i @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6 && npx cap add android && npx cap sync android"},
 {"run":"R=android/app/src/main/res && rm -rf $R/mipmap-anydpi-v26 && for d in $R/mipmap-*dpi; do cp icon-192.png $d/ic_launcher.png; cp icon-192.png $d/ic_launcher_round.png; done"},
 {"run":"cd android && chmod +x gradlew && ./gradlew assembleDebug"},
-{"uses":"actions/upload-artifact@v4","with":{"name":"BOBO-Loot-APK","path":"android/app/build/output
+{"uses":"actions/upload-artifact@v4","with":{"name":"BOBO-Loot-APK","path":"android/app/build/outputs/apk/debug/app-debug.apk"}}
+]}}}
